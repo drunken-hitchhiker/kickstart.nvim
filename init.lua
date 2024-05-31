@@ -1,251 +1,39 @@
---[[
+require 'opt'
+require 'check_lazy'
 
-=====================================================================
-==================== READ THIS BEFORE CONTINUING ====================
-=====================================================================
-========                                    .-----.          ========
-========         .----------------------.   | === |          ========
-========         |.-""""""""""""""""""-.|   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||   KICKSTART.NVIM   ||   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||                    ||   |-----|          ========
-========         ||:Tutor              ||   |:::::|          ========
-========         |'-..................-'|   |____o|          ========
-========         `"")----------------(""`   ___________      ========
-========        /::::::::::|  |::::::::::\  \ no mouse \     ========
-========       /:::========|  |==hjkl==:::\  \ required \    ========
-========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
-========                                                     ========
-=====================================================================
-=====================================================================
-
-What is Kickstart?
-
-  Kickstart.nvim is *not* a distribution.
-
-  Kickstart.nvim is a starting point for your own configuration.
-    The goal is that you can read every line of code, top-to-bottom, understand
-    what your configuration is doing, and modify it to suit your needs.
-
-    Once you've done that, you can start exploring, configuring and tinkering to
-    make Neovim your own! That might mean leaving Kickstart just the way it is for a while
-    or immediately breaking it into modular pieces. It's up to you!
-
-    If you don't know anything about Lua, I recommend taking some time to read through
-    a guide. One possible example which will only take 10-15 minutes:
-      - https://learnxinyminutes.com/docs/lua/
-
-    After understanding a bit more about Lua, you can use `:help lua-guide` as a
-    reference for how Neovim integrates Lua.
-    - :help lua-guide
-    - (or HTML version): https://neovim.io/doc/user/lua-guide.html
-
-Kickstart Guide:
-
-  TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
-
-    If you don't know what this means, type the following:
-      - <escape key>
-      - :
-      - Tutor
-      - <enter key>
-
-    (If you already know the Neovim basics, you can skip this step.)
-
-  Once you've completed that, you can continue working through **AND READING** the rest
-  of the kickstart init.lua.
-
-  Next, run AND READ `:help`.
-    This will open up a help window with some basic information
-    about reading, navigating and searching the builtin help documentation.
-
-    This should be the first place you go to look when you're stuck or confused
-    with something. It's one of my favorite Neovim features.
-
-    MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
-    which is very useful when you're not exactly sure of what you're looking for.
-
-  I have left several `:help X` comments throughout the init.lua
-    These are hints about where to find more information about the relevant settings,
-    plugins or Neovim features used in Kickstart.
-
-   NOTE: Look for lines like this
-
-    Throughout the file. These are for you, the reader, to help you understand what is happening.
-    Feel free to delete them once you know what you're doing, but they should serve as a guide
-    for when you are first encountering a few different constructs in your Neovim config.
-
-If you experience any errors while trying to install kickstart, run `:checkhealth` for more info.
-
-I hope you enjoy your Neovim journey,
-- TJ
-
-P.S. You can delete this when you're done too. It's your config now! :)
---]]
-
--- Set <space> as the leader key
--- See `:help mapleader`
---  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
-
--- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
-
--- [[ Setting options ]]
--- See `:help vim.opt`
--- NOTE: You can change these options as you wish!
---  For more options, you can see `:help option-list`
-
--- Make line numbers default
-vim.opt.number = true
--- You can also add relative line numbers, to help with jumping.
---  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
-
--- Enable mouse mode, can be useful for resizing splits for example!
-vim.opt.mouse = 'a'
-
--- Don't show the mode, since it's already in the status line
-vim.opt.showmode = false
-
--- Sync clipboard between OS and Neovim.
---  Remove this option if you want your OS clipboard to remain independent.
---  See `:help 'clipboard'`
-vim.opt.clipboard = 'unnamedplus'
-
--- Enable break indent
-vim.opt.breakindent = true
-
--- Save undo history
-vim.opt.undofile = true
-
--- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
-
--- Keep signcolumn on by default
-vim.opt.signcolumn = 'yes'
-
--- Decrease update time
-vim.opt.updatetime = 250
-
--- Decrease mapped sequence wait time
--- Displays which-key popup sooner
-vim.opt.timeoutlen = 300
-
--- Configure how new splits should be opened
-vim.opt.splitright = true
-vim.opt.splitbelow = true
-
--- Sets how neovim will display certain whitespace characters in the editor.
---  See `:help 'list'`
---  and `:help 'listchars'`
-vim.opt.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
-
--- Preview substitutions live, as you type!
-vim.opt.inccommand = 'split'
-
--- Show which line your cursor is on
-vim.opt.cursorline = true
-
--- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.scrolloff = 10
-
--- [[ Basic Keymaps ]]
---  See `:help vim.keymap.set()`
-
--- Set highlight on search, but clear on pressing <Esc> in normal mode
-vim.opt.hlsearch = true
-vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
-
--- Diagnostic keymaps
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
-
--- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
--- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
--- is not what someone will guess without a bit more experience.
+-- [[ Настройка и установка плагинов ]]
 --
--- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
--- or just use <C-\><C-n> to exit terminal mode
-vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
-
--- TIP: Disable arrow keys in normal mode
--- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
--- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
--- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
-
--- Keybinds to make split navigation easier.
---  Use CTRL+<hjkl> to switch between windows
---
---  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
-
--- [[ Basic Autocommands ]]
---  See `:help lua-guide-autocommands`
-
--- Highlight when yanking (copying) text
---  Try it with `yap` in normal mode
---  See `:help vim.highlight.on_yank()`
-vim.api.nvim_create_autocmd('TextYankPost', {
-  desc = 'Highlight when yanking (copying) text',
-  group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
-  callback = function()
-    vim.highlight.on_yank()
-  end,
-})
-
--- [[ Install `lazy.nvim` plugin manager ]]
---    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
-local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
-if not vim.loop.fs_stat(lazypath) then
-  local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
-  vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
-end ---@diagnostic disable-next-line: undefined-field
-vim.opt.rtp:prepend(lazypath)
-
--- [[ Configure and install plugins ]]
---
---  To check the current status of your plugins, run
+--  Чтобы проверить текущее состояние ваших плагинов, запустите
 --    :Lazy
 --
---  You can press `?` in this menu for help. Use `:q` to close the window
+--  Вы можете нажать "?" в этом меню для получения справки. Используйте ":q", чтобы закрыть окно
 --
---  To update plugins you can run
+--  Чтобы обновить плагины, вы можете запустить
 --    :Lazy update
 --
--- NOTE: Here is where you install your plugins.
+-- NOTE: Здесь вы можете установить свои плагины.
 require('lazy').setup({
-  -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
-  'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+  -- NOTE: Плагины могут быть добавлены по ссылке (или для репозитория на github: 'owner/repo' link).
+  'tpope/vim-sleuth', -- Автоматическое определение уровня табуляции и ширины сдвига
 
-  -- NOTE: Plugins can also be added by using a table,
-  -- with the first argument being the link and the following
-  -- keys can be used to configure plugin behavior/loading/etc.
+  -- NOTE: Плагины также могут быть добавлены с помощью таблицы,
+  -- где первым аргументом является ссылка, а следующие
+  -- ключи могут использоваться для настройки поведения плагина/загрузки/и т.д.
   --
-  -- Use `opts = {}` to force a plugin to be loaded.
+  -- Используйте `opts = {}`, чтобы принудительно загрузить плагин.
   --
-  --  This is equivalent to:
+  --  Это эквивалентно:
   --    require('Comment').setup({})
 
-  -- "gc" to comment visual regions/lines
+  -- "gc" для комментирования визуальных областей/строк
   { 'numToStr/Comment.nvim', opts = {} },
 
-  -- Here is a more advanced example where we pass configuration
-  -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
-  --    require('gitsigns').setup({ ... })
+  -- Вот более продвинутый пример, в котором мы передаем configuration
+  -- options в `gitsigns.nvim`. Это эквивалентно следующему Lua:
+  -- require('gitsigns').setup({ ... })
   --
-  -- See `:help gitsigns` to understand what the configuration keys do
-  { -- Adds git related signs to the gutter, as well as utilities for managing changes
+  -- Смотрите раздел `:help gitsigns", чтобы понять, что делают конфигурационные ключи
+  { -- Добавляет в желоб знаки, связанные с git, а также утилиты для управления изменениями
     'lewis6991/gitsigns.nvim',
     opts = {
       signs = {
@@ -258,28 +46,28 @@ require('lazy').setup({
     },
   },
 
-  -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
+  -- NOTE: Плагины также можно настроить на запуск Lua-кода при их загрузке.
   --
-  -- This is often very useful to both group configuration, as well as handle
-  -- lazy loading plugins that don't need to be loaded immediately at startup.
+  -- Это часто очень полезно как для настройки группы, так и для управления
+  -- плагины с отложенной загрузкой, которые не нужно загружать сразу при запуске.
   --
-  -- For example, in the following configuration, we use:
+  -- Например, в следующей конфигурации мы используем:
   --  event = 'VimEnter'
   --
-  -- which loads which-key before all the UI elements are loaded. Events can be
-  -- normal autocommands events (`:help autocmd-events`).
+  -- который загружает which-key перед загрузкой всех элементов пользовательского интерфейса. Событиями могут быть
+  -- обычные события autocommands (`:help autocmd-events`).
   --
-  -- Then, because we use the `config` key, the configuration only runs
-  -- after the plugin has been loaded:
-  --  config = function() ... end
+  -- Затем, поскольку мы используем ключ "config", выполняется только настройка
+  -- после загрузки плагина:
+  -- config = function() ... end
 
-  { -- Useful plugin to show you pending keybinds.
+  { -- Полезный плагин для отображения ожидающих ввода комбинаций клавиш.
     'folke/which-key.nvim',
-    event = 'VimEnter', -- Sets the loading event to 'VimEnter'
-    config = function() -- This is the function that runs, AFTER loading
+    event = 'VimEnter', -- Устанавливает для события загрузки значение "VimEnter"
+    config = function() -- Это функция, которая запускается ПОСЛЕ загрузки
       require('which-key').setup()
 
-      -- Document existing key chains
+      -- Документируйте существующие цепочки ключей
       require('which-key').register {
         ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
         ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
@@ -296,12 +84,12 @@ require('lazy').setup({
     end,
   },
 
-  -- NOTE: Plugins can specify dependencies.
+  -- NOTE: Плагины могут указывать зависимости.
   --
-  -- The dependencies are proper plugin specifications as well - anything
-  -- you do for a plugin at the top level, you can do for a dependency.
+  -- Зависимости также являются соответствующими спецификациями плагина - все, что угодно
+  -- вы делаете это для плагина на верхнем уровне, вы можете сделать это для зависимости.
   --
-  -- Use the `dependencies` key to specify the dependencies of a particular plugin
+  -- Используйте ключ `dependencies`, чтобы указать зависимости конкретного плагина
 
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
@@ -309,56 +97,53 @@ require('lazy').setup({
     branch = '0.1.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
-      { -- If encountering errors, see telescope-fzf-native README for installation instructions
+      { -- Если вы столкнулись с ошибками, инструкции по установке смотрите в разделе telescope-fzf-native README
         'nvim-telescope/telescope-fzf-native.nvim',
 
-        -- `build` is used to run some command when the plugin is installed/updated.
-        -- This is only run then, not every time Neovim starts up.
+        -- `build` используется для запуска некоторой команды при установке/обновлении плагина.
+        -- Это выполняется только тогда, а не при каждом запуске Neovim.
         build = 'make',
 
-        -- `cond` is a condition used to determine whether this plugin should be
-        -- installed and loaded.
+        -- "cond" - это условие, используемое для определения того, следует ли
+        -- устанавливать и загружать этот плагин.
         cond = function()
           return vim.fn.executable 'make' == 1
         end,
       },
       { 'nvim-telescope/telescope-ui-select.nvim' },
 
-      -- Useful for getting pretty icons, but requires a Nerd Font.
+      -- Полезно для создания красивых иконок, но требует использования шрифта Nerd.
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
     },
     config = function()
-      -- Telescope is a fuzzy finder that comes with a lot of different things that
-      -- it can fuzzy find! It's more than just a "file finder", it can search
-      -- many different aspects of Neovim, your workspace, LSP, and more!
+      -- Телескоп - это прибор для поиска нечетких изображений, который поставляется с большим количеством различных предметов, которые он может найти нечетко! Это больше, чем просто "поисковик файлов", он может выполнять поиск
+      -- множество различных аспектов Neovim, ваше рабочее пространство, LSP и многое другое!
       --
-      -- The easiest way to use Telescope, is to start by doing something like:
-      --  :Telescope help_tags
+      -- Самый простой способ использовать Telescope - это начать с выполнения чего-то вроде:
+      -- :Telescope help_tags
       --
-      -- After running this command, a window will open up and you're able to
-      -- type in the prompt window. You'll see a list of `help_tags` options and
-      -- a corresponding preview of the help.
+      -- После выполнения этой команды откроется окно, в котором вы сможете
+      -- ввести в окне подсказки. Вы увидите список опций `help_tags` и
+      -- соответствующий предварительный просмотр справки.
       --
-      -- Two important keymaps to use while in Telescope are:
-      --  - Insert mode: <c-/>
-      --  - Normal mode: ?
+      -- В Telescope можно использовать две важные комбинации клавиш:
+      -- - Режим вставки: <c-/>
+      -- - Обычный режим: ?
       --
-      -- This opens a window that shows you all of the keymaps for the current
-      -- Telescope picker. This is really useful to discover what Telescope can
-      -- do as well as how to actually do it!
-
-      -- [[ Configure Telescope ]]
-      -- See `:help telescope` and `:help telescope.setup()`
+      -- Откроется окно, в котором отображаются все настройки для текущего телескопа.
+      -- Выбор телескопа. Это действительно полезно, чтобы узнать, что может делать телескоп, а также как это сделать на самом деле!
+      -- [[ Настройка телескопа ]]
+      -- Смотрите раздел `:help telescope` и `:help telescope.setup()`.
       require('telescope').setup {
-        -- You can put your default mappings / updates / etc. in here
-        --  All the info you're looking for is in `:help telescope.setup()`
+        -- Вы можете установить свои стандартные сопоставления / обновления / и т.д. здесь
+        -- Вся информация, которую вы ищете, находится в разделе ":help telescope.setup()".
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
-        -- pickers = {}
+        defaults = {
+          mappings = {
+            i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+          },
+        },
+        pickers = {},
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -366,7 +151,7 @@ require('lazy').setup({
         },
       }
 
-      -- Enable Telescope extensions if they are installed
+      -- Включите расширения телескопа, если они установлены
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
 
@@ -385,15 +170,15 @@ require('lazy').setup({
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
-        -- You can pass additional configuration to Telescope to change the theme, layout, etc.
+        -- Вы можете передать дополнительные настройки в Telescope, чтобы изменить тему, макет и т.д.
         builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
           winblend = 10,
-          previewer = false,
+          previewer = true,
         })
       end, { desc = '[/] Fuzzily search in current buffer' })
 
-      -- It's also possible to pass additional configuration options.
-      --  See `:help telescope.builtin.live_grep()` for information about particular keys
+      -- Также возможно передать дополнительные параметры конфигурации.
+      -- Смотрите ":help telescope.builtin.live_grep()" для получения информации о конкретных ключах
       vim.keymap.set('n', '<leader>s/', function()
         builtin.live_grep {
           grep_open_files = true,
@@ -401,117 +186,116 @@ require('lazy').setup({
         }
       end, { desc = '[S]earch [/] in Open Files' })
 
-      -- Shortcut for searching your Neovim configuration files
+      -- Ярлык для поиска ваших конфигурационных файлов Neovim
       vim.keymap.set('n', '<leader>sn', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[S]earch [N]eovim files' })
     end,
   },
 
-  { -- LSP Configuration & Plugins
+  { -- Настройка и плагины LSP
     'neovim/nvim-lspconfig',
     dependencies = {
-      -- Automatically install LSPs and related tools to stdpath for Neovim
-      { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
+      -- Автоматическая установка LSP и связанных с ними инструментов в stdpath для Neovim
+      { 'williamboman/mason.nvim', config = true }, -- NOTE: Должен быть загружен раньше, чем dependants
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
-      -- Useful status updates for LSP.
+      -- Полезные обновления статуса для LSP.
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
       { 'j-hui/fidget.nvim', opts = {} },
 
-      -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
-      -- used for completion, annotations and signatures of Neovim apis
+      -- `neodev` настраивает Lua LSP для вашей конфигурации Neovim, среды выполнения и плагинов
+      -- используется для завершения, аннотаций и подписей API Neovim
       { 'folke/neodev.nvim', opts = {} },
     },
     config = function()
-      -- Brief aside: **What is LSP?**
+      -- Краткое отступление: **Что такое LSP?**
       --
-      -- LSP is an initialism you've probably heard, but might not understand what it is.
+      -- LSP — это аббревиатура, которую вы, вероятно, слышали, но, возможно, не понимаете, что это такое.
       --
-      -- LSP stands for Language Server Protocol. It's a protocol that helps editors
-      -- and language tooling communicate in a standardized fashion.
+      -- LSP расшифровывается как Language Server Protocol (Протокол Серверов Языка). Это протокол, который помогает редакторам
+      -- и инструментам для работы с языками программирования взаимодействовать стандартизированным образом.
       --
-      -- In general, you have a "server" which is some tool built to understand a particular
-      -- language (such as `gopls`, `lua_ls`, `rust_analyzer`, etc.). These Language Servers
-      -- (sometimes called LSP servers, but that's kind of like ATM Machine) are standalone
-      -- processes that communicate with some "client" - in this case, Neovim!
+      -- В общем, у вас есть "сервер", который представляет собой инструмент, созданный для понимания конкретного
+      -- языка (например, `gopls`, `lua_ls`, `rust_analyzer` и т.д.). Эти серверы языков (иногда называемые серверами LSP,
+      -- что похоже на "машина с банкоматом") являются отдельными процессами, которые взаимодействуют с "клиентом" - в данном случае, Neovim!
       --
-      -- LSP provides Neovim with features like:
-      --  - Go to definition
-      --  - Find references
-      --  - Autocompletion
-      --  - Symbol Search
-      --  - and more!
+      -- LSP предоставляет Neovim такие возможности, как:
+      --  - Переход к определению
+      --  - Поиск ссылок
+      --  - Автозавершение
+      --  - Поиск символов
+      --  - и многое другое!
       --
-      -- Thus, Language Servers are external tools that must be installed separately from
-      -- Neovim. This is where `mason` and related plugins come into play.
+      -- Таким образом, серверы языков являются внешними инструментами, которые необходимо устанавливать отдельно от
+      -- Neovim. Здесь на помощь приходят `mason` и связанные с ним плагины.
       --
-      -- If you're wondering about lsp vs treesitter, you can check out the wonderfully
-      -- and elegantly composed help section, `:help lsp-vs-treesitter`
+      -- Если вас интересует разница между lsp и treesitter, вы можете ознакомиться с прекрасно
+      -- и элегантно составленным разделом справки `:help lsp-vs-treesitter`.
 
-      --  This function gets run when an LSP attaches to a particular buffer.
-      --    That is to say, every time a new file is opened that is associated with
-      --    an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this
-      --    function will be executed to configure the current buffer
+      -- Эта функция выполняется, когда LSP подключается к конкретному буферу.
+      -- Иными словами, каждый раз, когда открывается новый файл, связанный с
+      -- LSP (например, открытие `main.rs` связано с `rust_analyzer`), эта
+      -- функция будет выполняться для настройки текущего буфера.
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
         callback = function(event)
-          -- NOTE: Remember that Lua is a real programming language, and as such it is possible
-          -- to define small helper and utility functions so you don't have to repeat yourself.
+          -- ЗАМЕТКА: Помните, что Lua — это настоящий язык программирования, и поэтому возможно
+          -- определять небольшие вспомогательные функции, чтобы не повторяться.
           --
-          -- In this case, we create a function that lets us more easily define mappings specific
-          -- for LSP related items. It sets the mode, buffer and description for us each time.
+          -- В данном случае мы создаем функцию, которая позволяет нам легче определять сопоставления клавиш,
+          -- специфичные для элементов, связанных с LSP. Она задает режим, буфер и описание для нас каждый раз.
           local map = function(keys, func, desc)
             vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
 
-          -- Jump to the definition of the word under your cursor.
-          --  This is where a variable was first declared, or where a function is defined, etc.
-          --  To jump back, press <C-t>.
+          -- Перейти к определению слова под курсором.
+          -- Это место, где переменная была впервые объявлена или где определена функция и т.д.
+          -- Чтобы вернуться назад, нажмите <C-t>.
           map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
 
-          -- Find references for the word under your cursor.
+          -- Найти ссылки на слово под курсором.
           map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
 
-          -- Jump to the implementation of the word under your cursor.
-          --  Useful when your language has ways of declaring types without an actual implementation.
+          -- Перейти к реализации слова под курсором.
+          -- Полезно, когда ваш язык имеет способы объявления типов без реальной реализации.
           map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
 
-          -- Jump to the type of the word under your cursor.
-          --  Useful when you're not sure what type a variable is and you want to see
-          --  the definition of its *type*, not where it was *defined*.
+          -- Перейти к типу слова под курсором.
+          -- Полезно, когда вы не уверены, какого типа переменная, и хотите увидеть
+          -- определение ее *типа*, а не место, где она была *определена*.
           map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
 
-          -- Fuzzy find all the symbols in your current document.
-          --  Symbols are things like variables, functions, types, etc.
+          -- Нечеткий поиск всех символов в текущем документе.
+          -- Символы — это такие вещи, как переменные, функции, типы и т.д.
           map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
 
-          -- Fuzzy find all the symbols in your current workspace.
-          --  Similar to document symbols, except searches over your entire project.
+          -- Нечеткий поиск всех символов в текущем рабочем пространстве.
+          -- Похоже на символы документа, но ищет по всему вашему проекту.
           map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
-          -- Rename the variable under your cursor.
-          --  Most Language Servers support renaming across files, etc.
+          -- Переименовать переменную под курсором.
+          -- Большинство серверов LSP поддерживают переименование через файлы и т.д.
           map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
 
-          -- Execute a code action, usually your cursor needs to be on top of an error
-          -- or a suggestion from your LSP for this to activate.
+          -- Выполнить действие с кодом, обычно ваш курсор должен находиться на ошибке
+          -- или предложении от вашего LSP, чтобы это активировалось.
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
-          -- Opens a popup that displays documentation about the word under your cursor
-          --  See `:help K` for why this keymap.
+          -- Открыть всплывающее окно, которое отображает документацию о слове под курсором.
+          -- См. `:help K` для информации о том, почему используется эта клавиша.
           map('K', vim.lsp.buf.hover, 'Hover Documentation')
 
-          -- WARN: This is not Goto Definition, this is Goto Declaration.
-          --  For example, in C this would take you to the header.
+          -- ПРЕДУПРЕЖДЕНИЕ: Это не Переход к определению, это Переход к объявлению.
+          -- Например, в C это приведет вас к заголовочному файлу.
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
-          -- The following two autocommands are used to highlight references of the
-          -- word under your cursor when your cursor rests there for a little while.
-          --    See `:help CursorHold` for information about when this is executed
+          -- Следующие две автокоманды используются для подсветки ссылок на слово под вашим курсором,
+          -- когда курсор находится на нем некоторое время.
+          -- См. `:help CursorHold` для информации о том, когда это выполняется.
           --
-          -- When you move your cursor, the highlights will be cleared (the second autocommand).
+          -- Когда вы перемещаете курсор, подсветка будет очищена (вторая автокоманда).
           local client = vim.lsp.get_client_by_id(event.data.client_id)
           if client and client.server_capabilities.documentHighlightProvider then
             local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
@@ -536,10 +320,10 @@ require('lazy').setup({
             })
           end
 
-          -- The following autocommand is used to enable inlay hints in your
-          -- code, if the language server you are using supports them
+          -- Следующая автокоманда используется для включения подсказок в вашем коде,
+          -- если ваш сервер языка поддерживает их.
           --
-          -- This may be unwanted, since they displace some of your code
+          -- Это может быть нежелательным, так как они могут смещать часть вашего кода.
           if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
             map('<leader>th', function()
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
@@ -548,34 +332,35 @@ require('lazy').setup({
         end,
       })
 
-      -- LSP servers and clients are able to communicate to each other what features they support.
-      --  By default, Neovim doesn't support everything that is in the LSP specification.
-      --  When you add nvim-cmp, luasnip, etc. Neovim now has *more* capabilities.
-      --  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
+      -- Серверы и клиенты LSP могут сообщать друг другу, какие возможности они поддерживают.
+      -- По умолчанию Neovim не поддерживает все, что есть в спецификации LSP.
+      -- Когда вы добавляете nvim-cmp, luasnip и т.д., Neovim получает *больше* возможностей.
+      -- Поэтому мы создаем новые возможности с nvim-cmp и передаем их серверам.
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
-      -- Enable the following language servers
-      --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
+      -- Включение следующих серверов языка
+      -- Чувствуйте себя свободно добавлять/удалять любые LSP, которые вам нужны. Они будут автоматически установлены.
       --
-      --  Add any additional override configuration in the following tables. Available keys are:
-      --  - cmd (table): Override the default command used to start the server
-      --  - filetypes (table): Override the default list of associated filetypes for the server
-      --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
-      --  - settings (table): Override the default settings passed when initializing the server.
-      --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+      -- Добавьте любую дополнительную конфигурацию в следующие таблицы. Доступные ключи:
+      -- - cmd (table): Переопределить команду по умолчанию, используемую для запуска сервера.
+      -- - filetypes (table): Переопределить список типов файлов, связанных с сервером.
+      -- - capabilities (table): Переопределить поля в возможностях. Можно использовать для отключения некоторых функций LSP.
+      -- - settings (table): Переопределить настройки по умолчанию, передаваемые при инициализации сервера.
+      -- Например, чтобы увидеть опции для `lua_ls`, вы можете перейти на: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
-        -- gopls = {},
-        -- pyright = {},
-        -- rust_analyzer = {},
-        -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
+        gopls = {},
+        pyright = {},
+        rust_analyzer = {},
+        -- ... и т.д. См. `:help lspconfig-all` для списка всех предустановленных LSP.
         --
-        -- Some languages (like typescript) have entire language plugins that can be useful:
+        -- Некоторые языки (например, TypeScript) имеют целые плагины для языка, которые могут быть полезны:
         --    https://github.com/pmizio/typescript-tools.nvim
         --
-        -- But for many setups, the LSP (`tsserver`) will work just fine
-        -- tsserver = {},
+        -- Но для многих настроек сервер LSP (`tsserver`) будет работать отлично.
+        tsserver = {},
+        marksman = {},
         --
 
         lua_ls = {
@@ -587,26 +372,27 @@ require('lazy').setup({
               completion = {
                 callSnippet = 'Replace',
               },
-              -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
+              -- Вы можете включить ниже, чтобы игнорировать шумные предупреждения `missing-fields` от Lua_LS.
               -- diagnostics = { disable = { 'missing-fields' } },
             },
           },
         },
       }
 
-      -- Ensure the servers and tools above are installed
-      --  To check the current status of installed tools and/or manually install
-      --  other tools, you can run
-      --    :Mason
+      -- Убедитесь, что указанные выше серверы и инструменты установлены.
+      -- Чтобы проверить текущее состояние установленных инструментов и/или вручную установить
+      -- другие инструменты, вы можете запустить:
+      -- :Mason
       --
-      --  You can press `g?` for help in this menu.
+      -- Вы можете нажать `g?` для получения справки в этом меню.
       require('mason').setup()
 
-      -- You can add other tools here that you want Mason to install
-      -- for you, so that they are available from within Neovim.
+      -- Вы можете добавить сюда другие инструменты, которые хотите, чтобы Mason установил
+      -- для вас, чтобы они были доступны в Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
-        'stylua', -- Used to format Lua code
+        'stylua', -- Используется для форматирования кода Lua.
+        'mdformat', -- Используется для форматирования кода markdown.
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -614,9 +400,9 @@ require('lazy').setup({
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}
-            -- This handles overriding only values explicitly passed
-            -- by the server configuration above. Useful when disabling
-            -- certain features of an LSP (for example, turning off formatting for tsserver)
+            -- Это обрабатывает переопределение только тех значений, которые явно переданы
+            -- в конфигурации сервера выше. Полезно при отключении
+            -- некоторых функций LSP (например, отключение форматирования для tsserver).
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
             require('lspconfig')[server_name].setup(server)
           end,
@@ -653,11 +439,11 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
+        python = { 'isort', 'black' },
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
-        -- javascript = { { "prettierd", "prettier" } },
+        javascript = { { 'prettierd', 'prettier' } },
       },
     },
   },
@@ -682,12 +468,12 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+            end,
+          },
         },
       },
       'saadparwaiz1/cmp_luasnip',
@@ -733,9 +519,9 @@ require('lazy').setup({
 
           -- If you prefer more traditional completion keymaps,
           -- you can uncomment the following lines
-          --['<CR>'] = cmp.mapping.confirm { select = true },
-          --['<Tab>'] = cmp.mapping.select_next_item(),
-          --['<S-Tab>'] = cmp.mapping.select_prev_item(),
+          ['<CR>'] = cmp.mapping.confirm { select = true },
+          ['<Tab>'] = cmp.mapping.select_next_item(),
+          ['<S-Tab>'] = cmp.mapping.select_prev_item(),
 
           -- Manually trigger a completion from nvim-cmp.
           --  Generally you don't need this, because nvim-cmp will display
@@ -835,7 +621,8 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
+      -- ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
+      ensure_installed = { 'lua', 'luadoc', 'markdown', 'python', 'rust' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -874,11 +661,11 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.neo-tree',
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
